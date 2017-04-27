@@ -54,5 +54,13 @@ test('child models', function (t) {
     var parent = Parent({
         child: child
     })
+
+    parent.onChange(function (newState) {
+        console.log('change', newState)
+        t.deepEqual(newState, {
+            child: { foo: 'test3' }
+        }, 'should bubble events from children')
+    })
+    child.update('test3')
 })
 

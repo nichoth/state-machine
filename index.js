@@ -3,20 +3,19 @@ var inherits = require('inherits')
 
 function Model (initState) {
     if (!(this instanceof Model)) return new Model(initState)
-    this.state = initState
+    this.state = {}
     var bus = Bus()
     this._bus = bus
     var self = this
     Object.keys(initState).forEach(function (k) {
         if (typeof initState[k].onChange === 'function') {
-            console.log('child', initState[k])
-            console.log('in here', initState[k].onChange)
-            console.log('bla', initState)
             self.state[k] = initState[k].state
             initState[k].onChange.call(initState[k], function (newState) {
                 self.state[k] = newState
+                self.publish()
             })
         }
+        else self.state[k] = initState[k]
     })
 }
 
@@ -55,3 +54,4 @@ Model.extend = function (constructor) {
 Model.Bus = Bus
 
 module.exports = Model
+
